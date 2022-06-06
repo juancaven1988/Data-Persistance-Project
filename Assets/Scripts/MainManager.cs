@@ -11,7 +11,9 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text bestScore;
     public GameObject GameOverText;
+    public GameObject nuevoRecord;
     
     private bool m_Started = false;
     private int m_Points;
@@ -39,6 +41,7 @@ public class MainManager : MonoBehaviour
         if(GameManager.Instance != null)
         {
             ScoreText.text = GameManager.Instance.player + " score: " + m_Points;
+            bestScore.text = "Best Score: " + GameManager.Instance.record.name + " - " + GameManager.Instance.record.score;
         }
        
 
@@ -64,6 +67,12 @@ public class MainManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                nuevoRecord.SetActive(false);
+            }
+            if(Input.GetKeyDown(KeyCode.Escape))
+            {
+                SceneManager.LoadScene(0);
+                nuevoRecord.SetActive(false);
             }
         }
     }
@@ -71,12 +80,26 @@ public class MainManager : MonoBehaviour
     void AddPoint(int point)
     {
         m_Points += point;
-        ScoreText.text = GameManager.Instance.player + " score: " + m_Points;
+        if(GameManager.Instance != null)
+        {
+            ScoreText.text = GameManager.Instance.player + " score: " + m_Points;
+        }
+        else
+        {
+            ScoreText.text = "Score: " + m_Points;
+        }
     }
 
     public void GameOver()
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        if(m_Points > GameManager.Instance.record.score)
+        {
+            GameManager.Instance.record.score = m_Points;
+            GameManager.Instance.record.name = GameManager.Instance.player;
+            GameManager.Instance.SaveRecord();
+            nuevoRecord.SetActive(true);
+        }
     }
 }

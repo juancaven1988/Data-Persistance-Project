@@ -12,9 +12,16 @@ public class MainMenu : MonoBehaviour
     [SerializeField] TextMeshProUGUI recordActual;
 
 
-    
+    private void Start()
+    {
+        if(GameManager.Instance.player != null)
+        {
+            nombreTxt.text = GameManager.Instance.player;
+            recordActual.text = "Actual Record: " + GameManager.Instance.record.name + " - " + GameManager.Instance.record.score;
+        }
+    }
 
-   public void NewStart()
+    public void NewStart()
     {
 
         if(nombreTxt.text != "")
